@@ -1,0 +1,958 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AcadManager - Organize sua vida universitária</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3a0ca3;
+            --accent: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --success: #4bb543;
+            --warning: #ffcc00;
+            --danger: #dc3545;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --border-radius: 8px;
+            --box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --transition: all 0.3s ease;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: var(--light);
+            color: var(--dark);
+            line-height: 1.6;
+        }
+
+        /* Header */
+        header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: var(--box-shadow);
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .logo-icon {
+            font-size: 1.8rem;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 1.5rem;
+        }
+
+        .nav-links a {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 5px 10px;
+            border-radius: var(--border-radius);
+        }
+
+        .nav-links a:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Main Content */
+        .main-content {
+            display: flex;
+            min-height: calc(100vh - 140px);
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 250px;
+            background: white;
+            box-shadow: var(--box-shadow);
+            padding: 1.5rem 0;
+            transition: var(--transition);
+        }
+
+        .sidebar-menu {
+            list-style: none;
+        }
+
+        .sidebar-menu li {
+            margin-bottom: 0.5rem;
+        }
+
+        .sidebar-menu a {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 0.8rem 1.5rem;
+            color: var(--dark);
+            text-decoration: none;
+            transition: var(--transition);
+        }
+
+        .sidebar-menu a:hover, .sidebar-menu a.active {
+            background-color: var(--light-gray);
+            border-right: 4px solid var(--primary);
+        }
+
+        .sidebar-menu i {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Content Area */
+        .content {
+            flex: 1;
+            padding: 2rem;
+            background-color: var(--light-gray);
+        }
+
+        .content-section {
+            display: none;
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 2rem;
+            box-shadow: var(--box-shadow);
+            margin-bottom: 2rem;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light-gray);
+        }
+
+        .section-title {
+            font-size: 1.5rem;
+            color: var(--primary);
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+
+        .btn:hover {
+            background-color: var(--secondary);
+        }
+
+        /* Dashboard */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: var(--border-radius);
+            padding: 1.5rem;
+            box-shadow: var(--box-shadow);
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+
+        .stat-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .deadlines-list {
+            list-style: none;
+        }
+
+        .deadline-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .deadline-item:last-child {
+            border-bottom: none;
+        }
+
+        .deadline-info h3 {
+            margin-bottom: 0.3rem;
+        }
+
+        .deadline-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .deadline-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .btn-icon {
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .btn-icon:hover {
+            color: var(--primary);
+        }
+
+        /* Calendar */
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .calendar-nav {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 1px;
+            background-color: var(--light-gray);
+            border: 1px solid var(--light-gray);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+        }
+
+        .calendar-day-header {
+            background-color: var(--primary);
+            color: white;
+            padding: 0.8rem;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .calendar-day {
+            background-color: white;
+            padding: 0.8rem;
+            min-height: 100px;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .calendar-day:hover {
+            background-color: var(--light-gray);
+        }
+
+        .calendar-day.other-month {
+            color: var(--gray);
+            background-color: #f8f9fa;
+        }
+
+        .calendar-day.has-event {
+            background-color: rgba(67, 97, 238, 0.1);
+        }
+
+        .calendar-event {
+            font-size: 0.8rem;
+            padding: 2px 5px;
+            background-color: var(--accent);
+            color: white;
+            border-radius: 3px;
+            margin-top: 5px;
+        }
+
+        /* Tasks */
+        .task-list {
+            list-style: none;
+        }
+
+        .task-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+        }
+
+        .task-item:last-child {
+            border-bottom: none;
+        }
+
+        .task-checkbox {
+            margin-right: 1rem;
+        }
+
+        .task-info {
+            flex: 1;
+        }
+
+        .task-title {
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+        }
+
+        .task-meta {
+            display: flex;
+            gap: 1rem;
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+
+        .task-priority {
+            padding: 2px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        .priority-high {
+            background-color: rgba(220, 53, 69, 0.1);
+            color: var(--danger);
+        }
+
+        .priority-medium {
+            background-color: rgba(255, 204, 0, 0.1);
+            color: var(--warning);
+        }
+
+        .priority-low {
+            background-color: rgba(76, 201, 240, 0.1);
+            color: var(--accent);
+        }
+
+        /* Groups */
+        .groups-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .group-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .group-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .group-header {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 1.5rem;
+        }
+
+        .group-title {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .group-subject {
+            opacity: 0.9;
+            font-size: 0.9rem;
+        }
+
+        .group-content {
+            padding: 1.5rem;
+        }
+
+        .group-members {
+            display: flex;
+            margin-bottom: 1rem;
+        }
+
+        .member {
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background-color: var(--light-gray);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            margin-right: -10px;
+            border: 2px solid white;
+        }
+
+        .member-more {
+            background-color: var(--gray);
+            color: white;
+        }
+
+        .group-progress {
+            margin-bottom: 1rem;
+        }
+
+        .progress-bar {
+            height: 6px;
+            background-color: var(--light-gray);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success);
+            border-radius: 3px;
+        }
+
+        .group-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--dark);
+            color: white;
+            padding: 1.5rem 0;
+            text-align: center;
+        }
+
+        /* Responsividade */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--secondary);
+                flex-direction: column;
+                padding: 1rem 0;
+                text-align: center;
+                box-shadow: var(--box-shadow);
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .mobile-menu-btn {
+                display: block;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 1rem 0;
+            }
+
+            .sidebar-menu {
+                display: flex;
+                overflow-x: auto;
+                padding: 0 1rem;
+            }
+
+            .sidebar-menu li {
+                margin-bottom: 0;
+                margin-right: 1rem;
+            }
+
+            .sidebar-menu a {
+                white-space: nowrap;
+            }
+
+            .calendar-day {
+                min-height: 60px;
+                padding: 0.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container">
+            <nav class="navbar">
+                <div class="logo">
+                    <span class="logo-icon">📚</span>
+                    <span>AcadManager</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="#" class="nav-link" data-section="dashboard">Dashboard</a></li>
+                    <li><a href="#" class="nav-link" data-section="calendar">Calendário</a></li>
+                    <li><a href="#" class="nav-link" data-section="tasks">Tarefas</a></li>
+                    <li><a href="#" class="nav-link" data-section="groups">Grupos</a></li>
+                    <li><a href="#" class="nav-link" data-section="profile">Perfil</a></li>
+                </ul>
+                <button class="mobile-menu-btn">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" class="sidebar-link active" data-section="dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                <li><a href="#" class="sidebar-link" data-section="calendar"><i class="fas fa-calendar-alt"></i> Calendário</a></li>
+                <li><a href="#" class="sidebar-link" data-section="tasks"><i class="fas fa-tasks"></i> Tarefas</a></li>
+                <li><a href="#" class="sidebar-link" data-section="groups"><i class="fas fa-users"></i> Grupos</a></li>
+                <li><a href="#" class="sidebar-link" data-section="messages"><i class="fas fa-envelope"></i> Mensagens</a></li>
+                <li><a href="#" class="sidebar-link" data-section="files"><i class="fas fa-folder"></i> Arquivos</a></li>
+                <li><a href="#" class="sidebar-link" data-section="settings"><i class="fas fa-cog"></i> Configurações</a></li>
+            </ul>
+        </aside>
+
+        <!-- Content Area -->
+        <main class="content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="content-section active">
+                <div class="section-header">
+                    <h2 class="section-title">Dashboard</h2>
+                    <button class="btn">Adicionar Tarefa</button>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-value">5</div>
+                        <div class="stat-label">Tarefas Pendentes</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Próximos Prazos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">2</div>
+                        <div class="stat-label">Grupos Ativos</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Tarefas Concluídas</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <h3>Próximos Prazos</h3>
+                </div>
+
+                <ul class="deadlines-list">
+                    <li class="deadline-item">
+                        <div class="deadline-info">
+                            <h3>Relatório de Física</h3>
+                            <div class="deadline-meta">
+                                <span><i class="far fa-calendar"></i> 15/10/2023</span>
+                                <span><i class="far fa-clock"></i> 23:59</span>
+                                <span class="task-priority priority-high">Alta</span>
+                            </div>
+                        </div>
+                        <div class="deadline-actions">
+                            <button class="btn-icon"><i class="far fa-edit"></i></button>
+                            <button class="btn-icon"><i class="far fa-check-circle"></i></button>
+                        </div>
+                    </li>
+                    <li class="deadline-item">
+                        <div class="deadline-info">
+                            <h3>Projeto de Programação</h3>
+                            <div class="deadline-meta">
+                                <span><i class="far fa-calendar"></i> 18/10/2023</span>
+                                <span><i class="far fa-clock"></i> 18:00</span>
+                                <span class="task-priority priority-medium">Média</span>
+                            </div>
+                        </div>
+                        <div class="deadline-actions">
+                            <button class="btn-icon"><i class="far fa-edit"></i></button>
+                            <button class="btn-icon"><i class="far fa-check-circle"></i></button>
+                        </div>
+                    </li>
+                    <li class="deadline-item">
+                        <div class="deadline-info">
+                            <h3>Apresentação de História</h3>
+                            <div class="deadline-meta">
+                                <span><i class="far fa-calendar"></i> 20/10/2023</span>
+                                <span><i class="far fa-clock"></i> 10:00</span>
+                                <span class="task-priority priority-low">Baixa</span>
+                            </div>
+                        </div>
+                        <div class="deadline-actions">
+                            <button class="btn-icon"><i class="far fa-edit"></i></button>
+                            <button class="btn-icon"><i class="far fa-check-circle"></i></button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Calendar Section -->
+            <section id="calendar" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Calendário</h2>
+                    <button class="btn">Adicionar Evento</button>
+                </div>
+
+                <div class="calendar-header">
+                    <h3>Outubro 2023</h3>
+                    <div class="calendar-nav">
+                        <button class="btn-icon"><i class="fas fa-chevron-left"></i></button>
+                        <button class="btn">Hoje</button>
+                        <button class="btn-icon"><i class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+
+                <div class="calendar-grid">
+                    <div class="calendar-day-header">Dom</div>
+                    <div class="calendar-day-header">Seg</div>
+                    <div class="calendar-day-header">Ter</div>
+                    <div class="calendar-day-header">Qua</div>
+                    <div class="calendar-day-header">Qui</div>
+                    <div class="calendar-day-header">Sex</div>
+                    <div class="calendar-day-header">Sáb</div>
+
+                    <!-- Dias do mês anterior -->
+                    <div class="calendar-day other-month">25</div>
+                    <div class="calendar-day other-month">26</div>
+                    <div class="calendar-day other-month">27</div>
+                    <div class="calendar-day other-month">28</div>
+                    <div class="calendar-day other-month">29</div>
+                    <div class="calendar-day other-month">30</div>
+                    <div class="calendar-day">1</div>
+
+                    <!-- Dias do mês atual -->
+                    <div class="calendar-day">2</div>
+                    <div class="calendar-day">3</div>
+                    <div class="calendar-day">4</div>
+                    <div class="calendar-day">5</div>
+                    <div class="calendar-day">6</div>
+                    <div class="calendar-day">7</div>
+                    <div class="calendar-day">8</div>
+                    <div class="calendar-day">9</div>
+                    <div class="calendar-day">10</div>
+                    <div class="calendar-day">11</div>
+                    <div class="calendar-day">12</div>
+                    <div class="calendar-day">13</div>
+                    <div class="calendar-day">14</div>
+                    <div class="calendar-day has-event">15
+                        <div class="calendar-event">Relatório Física</div>
+                    </div>
+                    <div class="calendar-day">16</div>
+                    <div class="calendar-day">17</div>
+                    <div class="calendar-day has-event">18
+                        <div class="calendar-event">Projeto Programação</div>
+                    </div>
+                    <div class="calendar-day">19</div>
+                    <div class="calendar-day has-event">20
+                        <div class="calendar-event">Apresentação História</div>
+                    </div>
+                    <div class="calendar-day">21</div>
+                    <div class="calendar-day">22</div>
+                    <div class="calendar-day">23</div>
+                    <div class="calendar-day">24</div>
+                    <div class="calendar-day">25</div>
+                    <div class="calendar-day">26</div>
+                    <div class="calendar-day">27</div>
+                    <div class="calendar-day">28</div>
+                    <div class="calendar-day">29</div>
+                    <div class="calendar-day">30</div>
+                    <div class="calendar-day">31</div>
+
+                    <!-- Dias do próximo mês -->
+                    <div class="calendar-day other-month">1</div>
+                    <div class="calendar-day other-month">2</div>
+                    <div class="calendar-day other-month">3</div>
+                    <div class="calendar-day other-month">4</div>
+                </div>
+            </section>
+
+            <!-- Tasks Section -->
+            <section id="tasks" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Tarefas</h2>
+                    <button class="btn">Nova Tarefa</button>
+                </div>
+
+                <ul class="task-list">
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox">
+                        <div class="task-info">
+                            <div class="task-title">Relatório de Física - Capítulo 3</div>
+                            <div class="task-meta">
+                                <span><i class="far fa-calendar"></i> 15/10/2023</span>
+                                <span><i class="far fa-clock"></i> 23:59</span>
+                                <span class="task-priority priority-high">Alta Prioridade</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn-icon"><i class="far fa-edit"></i></button>
+                            <button class="btn-icon"><i class="far fa-trash-alt"></i></button>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox">
+                        <div class="task-info">
+                            <div class="task-title">Projeto de Programação - Sistema AcadManager</div>
+                            <div class="task-meta">
+                                <span><i class="far fa-calendar"></i> 18/10/2023</span>
+                                <span><i class="far fa-clock"></i> 18:00</span>
+                                <span class="task-priority priority-medium">Média Prioridade</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn-icon"><i class="far fa-edit"></i></button>
+                            <button class="btn-icon"><i class="far fa-trash-alt"></i></button>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox" checked>
+                        <div class="task-info">
+                            <div class="task-title">Exercícios de Matemática - Lista 5</div>
+                            <div class="task-meta">
+                                <span><i class="far fa-calendar"></i> 10/10/2023</span>
+                                <span><i class="far fa-clock"></i> 14:00</span>
+                                <span class="task-priority priority-low">Baixa Prioridade</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn-icon"><i class="far fa-edit"></i></button>
+                            <button class="btn-icon"><i class="far fa-trash-alt"></i></button>
+                        </div>
+                    </li>
+                    <li class="task-item">
+                        <input type="checkbox" class="task-checkbox">
+                        <div class="task-info">
+                            <div class="task-title">Apresentação de História - Revolução Industrial</div>
+                            <div class="task-meta">
+                                <span><i class="far fa-calendar"></i> 20/10/2023</span>
+                                <span><i class="far fa-clock"></i> 10:00</span>
+                                <span class="task-priority priority-low">Baixa Prioridade</span>
+                            </div>
+                        </div>
+                        <div class="task-actions">
+                            <button class="btn-icon"><i class="far fa-edit"></i></button>
+                            <button class="btn-icon"><i class="far fa-trash-alt"></i></button>
+                        </div>
+                    </li>
+                </ul>
+            </section>
+
+            <!-- Groups Section -->
+            <section id="groups" class="content-section">
+                <div class="section-header">
+                    <h2 class="section-title">Grupos de Trabalho</h2>
+                    <button class="btn">Criar Grupo</button>
+                </div>
+
+                <div class="groups-grid">
+                    <div class="group-card">
+                        <div class="group-header">
+                            <h3 class="group-title">Projeto de Programação</h3>
+                            <div class="group-subject">Algoritmos e Estruturas de Dados</div>
+                        </div>
+                        <div class="group-content">
+                            <div class="group-members">
+                                <div class="member">MS</div>
+                                <div class="member">JS</div>
+                                <div class="member">AR</div>
+                                <div class="member member-more">+2</div>
+                            </div>
+                            <div class="group-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                                <div style="font-size: 0.8rem; margin-top: 5px;">65% concluído</div>
+                            </div>
+                            <div class="group-actions">
+                                <button class="btn" style="flex: 1;">Acessar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group-card">
+                        <div class="group-header">
+                            <h3 class="group-title">Apresentação de História</h3>
+                            <div class="group-subject">História Contemporânea</div>
+                        </div>
+                        <div class="group-content">
+                            <div class="group-members">
+                                <div class="member">MS</div>
+                                <div class="member">PL</div>
+                                <div class="member">TC</div>
+                            </div>
+                            <div class="group-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 30%"></div>
+                                </div>
+                                <div style="font-size: 0.8rem; margin-top: 5px;">30% concluído</div>
+                            </div>
+                            <div class="group-actions">
+                                <button class="btn" style="flex: 1;">Acessar</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="group-card">
+                        <div class="group-header">
+                            <h3 class="group-title">Estudo para Prova</h3>
+                            <div class="group-subject">Física I</div>
+                        </div>
+                        <div class="group-content">
+                            <div class="group-members">
+                                <div class="member">MS</div>
+                                <div class="member">RF</div>
+                                <div class="member">LS</div>
+                                <div class="member member-more">+3</div>
+                            </div>
+                            <div class="group-progress">
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 80%"></div>
+                                </div>
+                                <div style="font-size: 0.8rem; margin-top: 5px;">80% concluído</div>
+                            </div>
+                            <div class="group-actions">
+                                <button class="btn" style="flex: 1;">Acessar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Other sections would go here -->
+        </main>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>AcadManager - Organize sua vida universitária</p>
+            <p>Integrantes: Davy, Levy, Pablo, Sampaio e Samuel | Disciplina: Interface Homem Máquina — AV1 | Data: 01/10</p>
+            <p>Made with GRANDAR</p>
+        </div>
+    </footer>
+
+    <script>
+        // Navegação entre seções
+        document.querySelectorAll('.nav-link, .sidebar-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                // Remove active class de todos os links
+                document.querySelectorAll('.nav-link, .sidebar-link').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                // Adiciona active class ao link clicado
+                this.classList.add('active');
+                
+                // Esconde todas as seções
+                document.querySelectorAll('.content-section').forEach(section => {
+                    section.classList.remove('active');
+                });
+                
+                // Mostra a seção correspondente
+                const sectionId = this.getAttribute('data-section');
+                document.getElementById(sectionId).classList.add('active');
+                
+                // Fecha menu mobile se estiver aberto
+                document.querySelector('.nav-links').classList.remove('active');
+            });
+        });
+
+        // Menu mobile
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('.nav-links').classList.toggle('active');
+        });
+
+        // Marcar tarefas como concluídas
+        document.querySelectorAll('.task-checkbox').forEach(checkbox => {
+            checkbox.addEventListener('change', function() {
+                const taskItem = this.closest('.task-item');
+                if (this.checked) {
+                    taskItem.style.opacity = '0.7';
+                    taskItem.style.textDecoration = 'line-through';
+                } else {
+                    taskItem.style.opacity = '1';
+                    taskItem.style.textDecoration = 'none';
+                }
+            });
+        });
+
+        // Simulação de interação com os botões de ação
+        document.querySelectorAll('.btn-icon').forEach(button => {
+            button.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                if (icon.classList.contains('fa-check-circle')) {
+                    icon.classList.toggle('far');
+                    icon.classList.toggle('fas');
+                    icon.style.color = 'var(--success)';
+                    
+                    // Simular conclusão de tarefa
+                    const deadlineItem = this.closest('.deadline-item');
+                    deadlineItem.style.opacity = '0.7';
+                    deadlineItem.style.textDecoration = 'line-through';
+                }
+            });
+        });
+    </script>
+</body>
+</html>
